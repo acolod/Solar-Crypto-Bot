@@ -1,0 +1,12 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "railway.Dockerfile"
+
+[deploy]
+numReplicas = 1
+sleepApplication = false
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 5
+
+[deploy.env]
+PORT = "8000"

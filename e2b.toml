@@ -1,0 +1,18 @@
+# This is a config for E2B sandbox template.
+# You can use template ID (ix463pcmse2k28qqnx8q) or template name (fullstack-v1_0_151-2be47a5c) to create a sandbox:
+
+# Python SDK
+# from e2b import Sandbox, AsyncSandbox
+# sandbox = Sandbox("fullstack-v1_0_151-2be47a5c") # Sync sandbox
+# sandbox = await AsyncSandbox.create("fullstack-v1_0_151-2be47a5c") # Async sandbox
+
+# JS SDK
+# import { Sandbox } from 'e2b'
+# const sandbox = await Sandbox.create('fullstack-v1_0_151-2be47a5c')
+
+team_id = "a72575ca-4ebb-4593-8255-db41aef5dca3"
+memory_mb = 8_096
+cpu_count = 2
+dockerfile = "e2b.Dockerfile"
+template_name = "fullstack-v1_0_151-2be47a5c"
+template_id = "ix463pcmse2k28qqnx8q"
