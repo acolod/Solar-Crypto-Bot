@@ -18,7 +18,8 @@ dependencies = [
     "pandas-ta",
     "pytz",
     "bcrypt",
-    "pyjwt"
+    "pyjwt",
+    "httpx" # Add this line
 ]
 
 [tool.setuptools.packages.find]
