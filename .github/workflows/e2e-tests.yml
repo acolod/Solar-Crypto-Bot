@@ -78,8 +78,8 @@ jobs:
         echo "});" >> tests/example.spec.ts
 
     - name: Add test script to package.json
-      # This ensures Playwright runs with the correct context
-      run: npm pkg set scripts.test="playwright test"
+      # Use npx within the script to guarantee path resolution
+      run: npm pkg set scripts.test="npx playwright test"
       working-directory: ./app
 
     - name: Run end-to-end tests
