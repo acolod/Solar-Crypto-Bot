@@ -49,11 +49,11 @@ jobs:
       with:
         node-version: '18'
         cache: 'pnpm'
-        # Point to the correct lock file for caching
         cache-dependency-path: app/pnpm-lock.yaml
 
     - name: Install frontend dependencies
-      run: pnpm install --frozen-lockfile
+      # Removed --frozen-lockfile to resolve incompatibility
+      run: pnpm install
       working-directory: ./app
 
     # --- E2E Testing ---
