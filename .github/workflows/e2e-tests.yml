@@ -59,9 +59,8 @@ jobs:
       run: npx playwright install --with-deps
       working-directory: ./app
 
-    # --- DEBUGGING STEP ---
-    - name: List files in the app directory
-      run: ls -R
+    - name: Create placeholder main.tsx
+      run: touch src/main.tsx
       working-directory: ./app
 
     - name: Build the frontend
