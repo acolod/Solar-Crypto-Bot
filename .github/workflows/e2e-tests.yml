@@ -40,8 +40,13 @@ jobs:
         python-version: '3.11'
 
     - name: Configure Python package discovery
+      # Using single quotes to prevent shell expansion issues.
       run: |
-        echo -e "\n[tool.setuptools.packages.find]\nwhere = [\"."\"]\ninclude = [\"api*\", \"core*\", \"solar*\"]" >> services/pyproject.toml
+        echo '
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["api*", "core*", "solar*"]
+' >> services/pyproject.toml
 
     - name: Install backend dependencies
       run: |
@@ -88,8 +93,6 @@ jobs:
         NEON_CONN_URL: "postgresql://user:password@localhost:5432/test_db"
       run: |
         cd app
-        # Start the backend and frontend servers in the background
-        # and run the Playwright tests against them.
         pnpm test:e2e
 
     #----------------------------------------------
