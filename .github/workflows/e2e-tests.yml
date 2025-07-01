@@ -52,13 +52,13 @@ jobs:
         cache-dependency-path: app/pnpm-lock.yaml
 
     - name: Install frontend dependencies
-      # Removed --frozen-lockfile to resolve incompatibility
       run: pnpm install
       working-directory: ./app
 
     # --- E2E Testing ---
     - name: Install Playwright browsers
-      run: pnpm playwright install --with-deps
+      # Using npx is a more robust way to call package executables in CI
+      run: npx playwright install --with-deps
       working-directory: ./app
 
     - name: Build the frontend
