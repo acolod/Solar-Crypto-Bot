@@ -10,7 +10,7 @@ dependencies = [
     "fastapi",
     "uvicorn[standard]",
     "psycopg",
-    "psycopg_pool",
+    "psycopg_pool", # Make sure this is present
     "sqlalchemy",
     "pandas",
     "requests",
@@ -21,8 +21,8 @@ dependencies = [
     "bcrypt",
     "pyjwt",
     "httpx",
-    "boto3" # ADD THIS LINE
+    "boto3" # Make sure this is present
 ]
 
 [tool.setuptools]
-packages = ["api", "core", "solar"]
+packages = ["api", "core", "solar"] # Make sure this is correctly placed
