@@ -77,8 +77,13 @@ jobs:
         echo "  expect(true).toBe(true);" >> tests/example.spec.ts
         echo "});" >> tests/example.spec.ts
 
+    - name: Add test script to package.json
+      # This ensures Playwright runs with the correct context
+      run: npm pkg set scripts.test="playwright test"
+      working-directory: ./app
+
     - name: Run end-to-end tests
-      run: npx playwright test
+      run: pnpm test
       working-directory: ./app
       env:
         # Use the connection string for the service container
