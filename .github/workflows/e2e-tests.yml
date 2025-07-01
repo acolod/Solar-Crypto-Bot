@@ -30,14 +30,17 @@ jobs:
     - name: Checkout repository code
       uses: actions/checkout@v4
 
+    # --- Backend Setup ---
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
     - name: Install backend dependencies
+      # This relies on the corrected pyproject.toml in your repository
       run: pip install -e ./services
 
+    # --- Frontend Setup ---
     - name: Set up Node.js and pnpm
       uses: pnpm/action-setup@v2
       with:
@@ -46,11 +49,14 @@ jobs:
       with:
         node-version: '18'
         cache: 'pnpm'
+        # Point to the correct lock file for caching
+        cache-dependency-path: app/pnpm-lock.yaml
 
     - name: Install frontend dependencies
       run: pnpm install --frozen-lockfile
       working-directory: ./app
 
+    # --- E2E Testing ---
     - name: Install Playwright browsers
       run: pnpm playwright install --with-deps
       working-directory: ./app
@@ -63,8 +69,10 @@ jobs:
       run: pnpm test:e2e
       working-directory: ./app
       env:
+        # Use the connection string for the service container
         NEON_CONN_URL: "postgresql://user:password@localhost:5432/test_db"
 
+    # --- Upload Test Results (on failure) ---
     - name: Upload Playwright report on failure
       if: failure()
       uses: actions/upload-artifact@v4
