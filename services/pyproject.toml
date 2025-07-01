@@ -10,6 +10,7 @@ dependencies = [
     "fastapi",
     "uvicorn[standard]",
     "psycopg",
+    "psycopg_pool", # ADD THIS LINE
     "sqlalchemy",
     "pandas",
     "requests",
