@@ -37,7 +37,6 @@ jobs:
         python-version: '3.11'
 
     - name: Install backend dependencies
-      # This relies on the corrected pyproject.toml in your repository
       run: pip install -e ./services
 
     # --- Frontend Setup ---
@@ -57,8 +56,11 @@ jobs:
 
     # --- E2E Testing ---
     - name: Install Playwright browsers
-      # Using npx is a more robust way to call package executables in CI
       run: npx playwright install --with-deps
+      working-directory: ./app
+
+    - name: Fix HTML path before build
+      run: sed -i 's/src="\/src\/main.tsx"/src=".\/src\/main.tsx"/' index.html
       working-directory: ./app
 
     - name: Build the frontend
@@ -69,7 +71,6 @@ jobs:
       run: pnpm test:e2e
       working-directory: ./app
       env:
-        # Use the connection string for the service container
         NEON_CONN_URL: "postgresql://user:password@localhost:5432/test_db"
 
     # --- Upload Test Results (on failure) ---
