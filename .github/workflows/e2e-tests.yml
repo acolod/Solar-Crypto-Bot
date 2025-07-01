@@ -69,12 +69,13 @@ jobs:
       working-directory: ./app
 
     - name: Create placeholder Playwright test file
+      working-directory: ./app
       run: |
+        mkdir -p tests
         echo "import { test, expect } from '@playwright/test';" > tests/example.spec.ts
         echo "test('placeholder test', async ({ page }) => {" >> tests/example.spec.ts
         echo "  expect(true).toBe(true);" >> tests/example.spec.ts
         echo "});" >> tests/example.spec.ts
-      working-directory: ./app
 
     - name: Run end-to-end tests
       run: npx playwright test
