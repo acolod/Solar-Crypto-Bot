@@ -22,5 +22,5 @@ dependencies = [
     "httpx"
 ]
 
-[tool.setuptools] # NEW SECTION
-packages = ["api", "core", "solar"] # MOVED HERE from [project]
+[tool.setuptools]
+packages = ["api", "core", "solar"]
