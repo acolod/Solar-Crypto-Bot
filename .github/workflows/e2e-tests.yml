@@ -37,6 +37,7 @@ jobs:
         python-version: '3.11'
 
     - name: Install backend dependencies
+      # This relies on the corrected pyproject.toml in your repository
       run: pip install -e ./services
 
     # --- Frontend Setup ---
@@ -68,9 +69,11 @@ jobs:
       working-directory: ./app
 
     - name: Run end-to-end tests
-      run: pnpm test:e2e
+      # Directly invoking playwright is more robust than using a package script
+      run: npx playwright test
       working-directory: ./app
       env:
+        # Use the connection string for the service container
         NEON_CONN_URL: "postgresql://user:password@localhost:5432/test_db"
 
     # --- Upload Test Results (on failure) ---
