@@ -10,7 +10,7 @@ dependencies = [
     "fastapi",
     "uvicorn[standard]",
     "psycopg",
-    "psycopg_pool", # ADD THIS LINE
+    "psycopg_pool",
     "sqlalchemy",
     "pandas",
     "requests",
@@ -20,7 +20,8 @@ dependencies = [
     "pytz",
     "bcrypt",
     "pyjwt",
-    "httpx"
+    "httpx",
+    "boto3" # ADD THIS LINE
 ]
 
 [tool.setuptools]
