@@ -59,8 +59,9 @@ jobs:
       run: npx playwright install --with-deps
       working-directory: ./app
 
-    - name: Fix HTML path before build
-      run: sed -i 's/src="\/src\/main.tsx"/src=".\/src\/main.tsx"/' index.html
+    # --- DEBUGGING STEP ---
+    - name: List files in the app directory
+      run: ls -R
       working-directory: ./app
 
     - name: Build the frontend
