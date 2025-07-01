@@ -24,3 +24,6 @@ dependencies = [
     "requests>=2.32.3",
     "uvicorn>=0.34.1",
 ]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["api*", "core*", "solar*"]
