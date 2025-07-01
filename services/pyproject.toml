@@ -8,9 +8,9 @@ version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi",
-    "uvicorn[standard]",
+    "uvicorn[standard]", # Includes Uvicorn's default dependencies
     "psycopg",
-    "psycopg_pool", # Make sure this is present
+    "psycopg_pool",
     "sqlalchemy",
     "pandas",
     "requests",
@@ -21,8 +21,15 @@ dependencies = [
     "bcrypt",
     "pyjwt",
     "httpx",
-    "boto3" # Make sure this is present
+    "boto3",
+    "loguru",
+    "numpy", # Required by services/core/market_analysis_service.py
+    "typing_extensions", # Used in services/api/utils.py for Annotated/Doc
+    # Optional but common dependencies for FastAPI projects:
+    # "alembic",            # Consider adding if you use DB migrations programmatically
+    # "python-multipart",   # Consider adding if you handle file uploads/form data
+    # "email-validator",    # Consider adding if you validate email fields with Pydantic
 ]
 
 [tool.setuptools]
-packages = ["api", "core", "solar"] # Make sure this is correctly placed
+packages = ["api", "core", "solar"]
