@@ -31,31 +31,24 @@ jobs:
     - name: Checkout repository code
       uses: actions/checkout@v4
 
-    #----------------------------------------------
-    # 1. Install Backend Dependencies
-    #----------------------------------------------
+    # --- Backend Setup ---
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
     - name: Configure Python package discovery
-      # Using single quotes to prevent shell expansion issues.
       run: |
-        echo '
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["api*", "core*", "solar*"]
-' >> services/pyproject.toml
+        echo '' >> services/pyproject.toml
+        echo '[tool.setuptools.packages.find]' >> services/pyproject.toml
+        echo 'where = ["."]' >> services/pyproject.toml
+        echo 'include = ["api*", "core*", "solar*"]' >> services/pyproject.toml
 
     - name: Install backend dependencies
-      run: |
-        cd services
-        pip install -e .
+      working-directory: ./services
+      run: pip install -e .
 
-    #----------------------------------------------
-    # 2. Install Frontend Dependencies
-    #----------------------------------------------
+    # --- Frontend Setup ---
     - name: Set up Node.js and pnpm
       uses: actions/setup-node@v3
       with:
@@ -63,41 +56,27 @@ include = ["api*", "core*", "solar*"]
     - uses: pnpm/action-setup@v2
       with:
         version: 8
+
     - name: Install frontend dependencies
-      run: |
-        cd app
-        pnpm install
+      working-directory: ./app
+      run: pnpm install
 
-    #----------------------------------------------
-    # 3. Install Playwright Browsers
-    #----------------------------------------------
+    # --- E2E Testing ---
     - name: Install Playwright test browsers
-      run: |
-        cd app
-        pnpm playwright install --with-deps
+      working-directory: ./app
+      run: pnpm playwright install --with-deps
 
-    #----------------------------------------------
-    # 4. Build the Frontend Application
-    #----------------------------------------------
     - name: Build the frontend
-      run: |
-        cd app
-        pnpm run build
+      working-directory: ./app
+      run: pnpm run build
 
-    #----------------------------------------------
-    # 5. Run the Application and E2E Tests
-    #----------------------------------------------
     - name: Run E2E tests with Playwright
+      working-directory: ./app
       env:
-        # Provide the database URL to the backend
         NEON_CONN_URL: "postgresql://user:password@localhost:5432/test_db"
-      run: |
-        cd app
-        pnpm test:e2e
+      run: pnpm test:e2e
 
-    #----------------------------------------------
-    # 6. Upload Test Results (on failure)
-    #----------------------------------------------
+    # --- Upload Test Results (on failure) ---
     - name: Upload Playwright report
       if: failure()
       uses: actions/upload-artifact@v4
