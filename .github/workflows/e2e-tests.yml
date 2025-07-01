@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
-    # Service container for PostgreSQL database
     services:
       postgres:
         image: postgres:13
@@ -31,53 +30,42 @@ jobs:
     - name: Checkout repository code
       uses: actions/checkout@v4
 
-    # --- Backend Setup ---
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
-    - name: Configure Python package discovery
-      run: |
-        echo '' >> services/pyproject.toml
-        echo '[tool.setuptools.packages.find]' >> services/pyproject.toml
-        echo 'where = ["."]' >> services/pyproject.toml
-        echo 'include = ["api*", "core*", "solar*"]' >> services/pyproject.toml
-
     - name: Install backend dependencies
-      working-directory: ./services
-      run: pip install -e .
+      run: pip install -e ./services
 
-    # --- Frontend Setup ---
     - name: Set up Node.js and pnpm
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-    - uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v2
       with:
         version: 8
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'pnpm'
 
     - name: Install frontend dependencies
+      run: pnpm install --frozen-lockfile
       working-directory: ./app
-      run: pnpm install
 
-    # --- E2E Testing ---
-    - name: Install Playwright test browsers
-      working-directory: ./app
+    - name: Install Playwright browsers
       run: pnpm playwright install --with-deps
+      working-directory: ./app
 
     - name: Build the frontend
-      working-directory: ./app
       run: pnpm run build
+      working-directory: ./app
 
-    - name: Run E2E tests with Playwright
+    - name: Run end-to-end tests
+      run: pnpm test:e2e
       working-directory: ./app
       env:
         NEON_CONN_URL: "postgresql://user:password@localhost:5432/test_db"
-      run: pnpm test:e2e
 
-    # --- Upload Test Results (on failure) ---
-    - name: Upload Playwright report
+    - name: Upload Playwright report on failure
       if: failure()
       uses: actions/upload-artifact@v4
       with:
