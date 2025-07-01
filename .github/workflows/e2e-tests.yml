@@ -1,0 +1,99 @@
+name: End-to-End Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # Service container for PostgreSQL database
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Checkout repository code
+      uses: actions/checkout@v3
+
+    #----------------------------------------------
+    # 1. Install Backend Dependencies
+    #----------------------------------------------
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Install backend dependencies
+      run: |
+        cd services
+        pip install -e .
+
+    #----------------------------------------------
+    # 2. Install Frontend Dependencies
+    #----------------------------------------------
+    - name: Set up Node.js and pnpm
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
+    - name: Install frontend dependencies
+      run: |
+        cd app
+        pnpm install
+
+    #----------------------------------------------
+    # 3. Install Playwright Browsers
+    #----------------------------------------------
+    - name: Install Playwright test browsers
+      run: |
+        cd app
+        pnpm playwright install --with-deps
+
+    #----------------------------------------------
+    # 4. Build the Frontend Application
+    #----------------------------------------------
+    - name: Build the frontend
+      run: |
+        cd app
+        pnpm run build
+
+    #----------------------------------------------
+    # 5. Run the Application and E2E Tests
+    #----------------------------------------------
+    - name: Run E2E tests with Playwright
+      env:
+        # Provide the database URL to the backend
+        NEON_CONN_URL: "postgresql://user:password@localhost:5432/test_db"
+      run: |
+        cd app
+        # Start the backend and frontend servers in the background
+        # and run the Playwright tests against them.
+        pnpm test:e2e
+
+    #----------------------------------------------
+    # 6. Upload Test Results (on failure)
+    #----------------------------------------------
+    - name: Upload Playwright report
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: playwright-report
+        path: app/playwright-report/
+        retention-days: 7
